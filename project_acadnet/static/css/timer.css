@@ -1,0 +1,39 @@
+.timer-page {
+  min-height: calc(100vh - 62px);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 1.4rem;
+  padding: 1.5rem 1rem 3rem;
+  text-align: center;
+}
+
+.team {
+  display: flex; align-items: center; justify-content: center; gap: 1rem;
+  font-size: clamp(1.6rem, 5vw, 3rem);
+  font-weight: 700;
+  min-height: 1.3em;
+}
+.team .flag { width: 3.6rem; height: 2.4rem; }
+.team small { color: var(--muted); font-size: .5em; font-weight: 400; }
+.team.none { color: var(--muted); font-weight: 400; }
+
+.clock-card {
+  padding: .6rem clamp(1rem, 4vw, 3rem);
+  background: var(--surface);
+  border: 2px solid var(--accent-soft);
+  border-radius: 28px;
+  box-shadow: 0 12px 40px color-mix(in srgb, var(--accent) 18%, transparent);
+}
+.clock {
+  font-family: ui-monospace, "SF Mono", Consolas, monospace;
+  font-variant-numeric: tabular-nums;
+  font-size: min(18vw, 13rem);
+  line-height: 1.1;
+  font-weight: 700;
+}
+.clock.stopped { color: var(--muted); }
+.clock.running { color: var(--accent-strong); }
+.clock.paused  { color: #d97706; }
+
+.status {
+  font-size: 1.1rem; letter-spacing: .14em; text-transform: uppercase; color: var(--muted);
+}
