@@ -1,22 +1,38 @@
-"""Starea aplicatiei, tinuta in memorie.
+"""Starea aplicatiei, tinuta in memorie (datele se citesc din CSV o singura data, la pornire).
 
-Acesta este locul care va fi inlocuit cu baza de date (SQLite) la issue 1.1.
-Restul codului acceseaza starea doar prin acest modul, deci schimbarea
-se face intr-un singur loc.
+Orice alt modul citeste/modifica starea doar prin obiectele de aici.
 """
 import time
 
+from app.config import RECENT_LIMIT
+from app.services import scoring, storage
+
 state = {
     "timer": {
-        "state": "stopped",          # stopped | running | paused
-        "duration": 180,             # secunde
-        "start": 0.0,                # ora serverului la ultimul start
+        "state": "stopped",        # stopped | running | paused
+        "start": 0.0,              # ora serverului la ultimul start
         "elapsed_before_pause": 0.0,
     },
-    "scores": {},                    # {"Echipa": puncte}
+    "active": {"proba": 1, "team_id": None},
 }
+
+teams: list[dict] = storage.load_teams()
+attempts: dict[int, list[dict]] = {p: storage.load_attempts(p) for p in (1, 2)}
+
+
+def team_by_id(team_id):
+    return next((t for t in teams if t["id"] == team_id), None)
 
 
 def snapshot() -> dict:
-    """Starea completa, cu ora serverului (pentru sincronizarea ceasurilor)."""
-    return {"server_time": time.time(), **state}
+    """Mesajul trimis tuturor clientilor: tot ce au nevoie ca sa se deseneze."""
+    return {
+        "type": "state",
+        "server_time": time.time(),
+        "timer": state["timer"],
+        "active": state["active"],
+        "teams": teams,
+        "leaderboards": {str(p): scoring.leaderboard(teams, attempts[p]) for p in (1, 2)},
+        "attempts": {str(p): list(reversed(attempts[p]))[:RECENT_LIMIT] for p in (1, 2)},
+        "counts": {str(p): len(attempts[p]) for p in (1, 2)},
+    }

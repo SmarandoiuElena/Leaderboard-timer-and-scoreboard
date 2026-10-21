@@ -1,21 +1,33 @@
-"""Endpoint-ul WebSocket: primeste comenzi, apeleaza serviciile, difuzeaza starea."""
+"""Endpoint-ul WebSocket: primeste comenzi, le executa, difuzeaza starea."""
 import json
 
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect
 
-from app.services import scores, timer
+from app.services import active, attempts, timer
+from app.services.errors import CmdError
 from app.state import snapshot
 from app.ws.manager import manager
 
 router = APIRouter()
 
-# Comanda primita -> functia care o executa. Comenzi noi se adauga aici.
+# Comanda primita -> functia care o executa. O comanda noua se adauga aici.
 COMMANDS = {
+    "set_proba": active.set_proba,
+    "set_team": active.set_team,
     "start": timer.start,
     "pause": timer.pause,
     "reset": timer.reset,
-    "score": scores.add_score,
+    "save": attempts.save,
+    "delete_attempt": attempts.delete_attempt,
 }
+
+
+def handle(cmd: dict) -> None:
+    action = cmd.get("action")
+    handler = COMMANDS.get(action) if isinstance(action, str) else None
+    if handler is None:
+        raise CmdError("Comandă necunoscută.")
+    handler(cmd)
 
 
 @router.websocket("/ws")
@@ -24,13 +36,17 @@ async def ws_endpoint(ws: WebSocket):
     await manager.send(ws, snapshot())  # stare initiala la conectare
     try:
         while True:
+            raw = await ws.receive_text()
             try:
-                cmd = json.loads(await ws.receive_text())
-            except ValueError:
-                continue  # mesaj invalid, il ignoram
-            handler = COMMANDS.get(cmd.get("action"))
-            if handler:
-                handler(cmd)
-                await manager.broadcast(snapshot())
+                cmd = json.loads(raw)
+                if not isinstance(cmd, dict):
+                    raise CmdError("Comandă invalidă.")
+                handle(cmd)
+            except json.JSONDecodeError:
+                continue
+            except CmdError as err:
+                await manager.send(ws, {"type": "error", "message": str(err)})
+                continue
+            await manager.broadcast(snapshot())
     except WebSocketDisconnect:
         manager.disconnect(ws)
