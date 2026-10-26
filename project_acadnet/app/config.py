@@ -1,14 +1,17 @@
-"""Constante si cai. Nimic de aici nu are logica."""
+import os
 from pathlib import Path
 
 BASE_DIR = Path(__file__).parent          # folderul app/
 STATIC_DIR = BASE_DIR / "static"
 DATA_DIR = BASE_DIR / "data"
 
+# Baza de date SQLite. Se poate muta cu variabila de mediu DB_PATH (util pentru Docker).
+DB_PATH = Path(os.environ.get("DB_PATH", DATA_DIR / "acadnet.db"))
+
+# CSV-urile se mai folosesc doar o singura data, la prima pornire, ca sa fie importate in baza de date.
 TEAMS_CSV = DATA_DIR / "teams.csv"
 RESULTS_CSV = {1: DATA_DIR / "proba1.csv", 2: DATA_DIR / "proba2.csv"}
 
-TEAM_FIELDS = ["id", "name", "country_code", "country_name"]
 RESULT_FIELDS = {
     1: ["id", "team_id", "cp1", "cp2", "cp3", "cp4", "cp5",
         "speed_points", "total", "time_s", "timestamp"],
@@ -16,6 +19,7 @@ RESULT_FIELDS = {
 }
 
 # Proba 1: 5 checkpoint-uri x 10 puncte + maxim 50 puncte de viteza
+# (daca schimbi CHECKPOINTS, schimba si coloanele cp1..cp5 din tabelul attempts_p1)
 CHECKPOINTS = 5
 CHECKPOINT_POINTS = 10
 SPEED_MAX_P1 = 50

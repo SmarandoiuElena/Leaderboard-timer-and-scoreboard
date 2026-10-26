@@ -4,3 +4,4 @@ __pycache__/
 *:Zone.Identifier
 .venv/
 p.zip
+*.db
