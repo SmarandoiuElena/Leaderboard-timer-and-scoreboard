@@ -1,39 +1,54 @@
 .timer-page {
-  min-height: calc(100vh - 62px);
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  gap: 1.4rem;
-  padding: 1.5rem 1rem 3rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  padding: 3rem 1.5rem;
   text-align: center;
 }
 
 .team {
-  display: flex; align-items: center; justify-content: center; gap: 1rem;
-  font-size: clamp(1.6rem, 5vw, 3rem);
-  font-weight: 700;
-  min-height: 1.3em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.2rem;
+  font-size: clamp(2rem, 4.5vw, 3.4rem);
+  font-weight: 800;
+  color: var(--acadnet-purple);
 }
-.team .flag { width: 3.6rem; height: 2.4rem; }
-.team small { color: var(--muted); font-size: .5em; font-weight: 400; }
-.team.none { color: var(--muted); font-weight: 400; }
+.team .flag-emoji { font-size: 3.4rem; }
+.team.none { color: var(--text-muted); font-weight: 600; }
 
 .clock-card {
-  padding: .6rem clamp(1rem, 4vw, 3rem);
+  padding: 2.2rem 4.5rem;
   background: var(--surface);
-  border: 2px solid var(--accent-soft);
-  border-radius: 28px;
-  box-shadow: 0 12px 40px color-mix(in srgb, var(--accent) 18%, transparent);
+  border: 1px solid var(--border-color);
+  border-top: 6px solid var(--acadnet-purple);
+  border-radius: 8px;
+  box-shadow: var(--shadow-card);
 }
+
 .clock {
-  font-family: ui-monospace, "SF Mono", Consolas, monospace;
+  font-family: Consolas, monospace;
   font-variant-numeric: tabular-nums;
-  font-size: min(18vw, 13rem);
-  line-height: 1.1;
-  font-weight: 700;
+  font-size: min(20vw, 15rem);
+  line-height: 1;
+  font-weight: 800;
+  color: var(--acadnet-purple);
 }
-.clock.stopped { color: var(--muted); }
-.clock.running { color: var(--accent-strong); }
-.clock.paused  { color: #d97706; }
+.clock.stopped { color: var(--text-muted); }
+.clock.paused  { color: var(--warn); }
 
 .status {
-  font-size: 1.1rem; letter-spacing: .14em; text-transform: uppercase; color: var(--muted);
+  font-size: 1.05rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--acadnet-purple);
+  background: var(--surface);
+  padding: 0.65rem 1.6rem;
+  border-radius: 6px;
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-input);
 }
