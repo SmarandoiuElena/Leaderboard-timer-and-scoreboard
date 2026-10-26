@@ -34,3 +34,8 @@ def clasament1_page():
 @router.get("/clasament2")
 def clasament2_page():
     return page("clasament2.html")
+
+
+@router.get("/admin")
+def admin_page():
+    return page("admin.html")

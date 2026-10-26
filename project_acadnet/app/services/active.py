@@ -1,6 +1,7 @@
 """Proba si echipa selectate in acest moment (comune tuturor ecranelor)."""
+from app.services import storage
 from app.services.errors import CmdError
-from app.state import state, team_by_id
+from app.state import state
 
 
 def require_stopped() -> None:
@@ -18,7 +19,7 @@ def set_proba(cmd: dict) -> None:
 
 def set_team(cmd: dict) -> None:
     team_id = cmd.get("team_id")
-    if team_id is not None and team_by_id(team_id) is None:
+    if team_id is not None and not storage.team_exists(team_id):
         raise CmdError("Echipă necunoscută.")
     require_stopped()
     state["active"]["team_id"] = team_id

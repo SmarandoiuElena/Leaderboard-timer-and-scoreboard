@@ -5,3 +5,5 @@ __pycache__/
 .venv/
 p.zip
 *.db
+*.db-wal
+*.db-shm
