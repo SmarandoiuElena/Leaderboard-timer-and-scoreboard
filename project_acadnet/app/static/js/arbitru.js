@@ -44,9 +44,8 @@
 
     renderDropdown(stopped);
 
-    $("start").disabled = st.timer.state === "running" || a.team_id === null;
-    $("start").textContent = st.timer.state === "paused" ? "Reia" : "Start";
-    $("pause").disabled = st.timer.state !== "running";
+    $("start").disabled = st.timer.state !== "stopped" || a.team_id === null;
+    $("finish").disabled = st.timer.state !== "running";
     $("saveBtn").disabled = a.team_id === null;
 
     $("recentTitle").textContent = "Ultimele încercări · " + Acad.probaTitle(a.proba);
@@ -178,26 +177,28 @@
 
     const team = st.teams.find((t) => t.id === a.team_id);
     const time = Acad.elapsed(st, offset);
-    const wasRunning = st.timer.state === "running";
-    if (wasRunning) link.send({ action: "pause" });
-    
+    if (st.timer.state === "running") link.send({ action: "finish" });
+
     const msg = `${Acad.probaTitle(a.proba)}\n${team.name}\nTotal: ${$("total").textContent} p`
       + (time > 0 ? `\nTimp: ${Acad.fmtTime(time)}` : "") + "\n\nSalvezi încercarea?";
 
-    if (!confirm(msg)) {
-      if (wasRunning) link.send({ action: "start" });
-        return;
-    }
+    if (!confirm(msg)) return;
 
     pendingSave = { proba: a.proba, count: st.counts[String(a.proba)] };
     link.send(payload);
   }
 
   // ---------------------------------------------------------------- evenimente
+    // ---------------------------------------------------------------- evenimente
   document.querySelectorAll(".seg-btn").forEach((b) =>
-    b.addEventListener("click", () => link.send({ action: "set_proba", proba: Number(b.dataset.proba) })));
+    b.addEventListener("click", () => {
+      const p = Number(b.dataset.proba);
+      if (!st || p === st.active.proba) return;
+      if (!confirm(`Schimbi proba la ${Acad.probaTitle(p)}?`)) return;
+      link.send({ action: "set_proba", proba: p });
+    }));
   $("start").onclick = () => link.send({ action: "start" });
-  $("pause").onclick = () => link.send({ action: "pause" });
+  $("finish").onclick = () => link.send({ action: "finish" });
   $("reset").onclick = () => link.send({ action: "reset" });
   $("saveBtn").onclick = save;
 

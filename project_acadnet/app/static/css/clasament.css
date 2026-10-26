@@ -34,7 +34,7 @@
 .r1 .rank, .r2 .rank, .r3 .rank { color: var(--accent-strong); }
 
 .team-cell { flex: 1; min-width: 0; display: flex; align-items: center; gap: 1rem; }
-.team-cell .flag { width: 3rem; height: 2rem; }
+.team-cell .flag { font-size: 2.5rem; }
 .team-name { font-size: 1.7rem; font-weight: 700; }
 .team-country { color: var(--muted); font-size: .95rem; }
 

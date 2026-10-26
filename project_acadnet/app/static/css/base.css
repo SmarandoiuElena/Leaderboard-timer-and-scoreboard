@@ -86,16 +86,8 @@ body {
 }
 
 /* ---- steag ---- */
-.flag {
-  width: 2.1rem; height: 1.4rem;
-  object-fit: cover;
-  border-radius: 3px;
-  border: 1px solid #c9c1e8;
-  background: #fff;
-  flex: none;
-  vertical-align: middle;
-}
-
+  .flag { font-size: 1.6rem; line-height: 1; flex: none; vertical-align: middle; }
+  
 /* ---- butoane (text alb pe accent) ---- */
 .btn {
   font: inherit; font-weight: 700;

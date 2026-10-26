@@ -15,10 +15,11 @@ COMMANDS = {
     "set_proba": active.set_proba,
     "set_team": active.set_team,
     "start": timer.start,
-    "pause": timer.pause,
+    "finish": timer.finish,    
     "reset": timer.reset,
     "save": attempts.save,
     "delete_attempt": attempts.delete_attempt,
+    
 }
 
 

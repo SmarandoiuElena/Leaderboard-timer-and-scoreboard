@@ -12,7 +12,7 @@ from app.services import scoring, storage
 
 state = {
     "timer": {
-        "state": "stopped",        # stopped | running | paused
+        "state": "stopped",        # stopped | running | finished
         "start": 0.0,              # ora serverului la ultimul start
         "elapsed_before_pause": 0.0,
     },

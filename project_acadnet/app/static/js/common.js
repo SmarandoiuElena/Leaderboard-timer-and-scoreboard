@@ -50,17 +50,15 @@ const Acad = (() => {
 
   function probaTitle(p) { return `${PROBA[p].name} · ${PROBA[p].label}`; }
 
-  // Steag: static/flags/<cod>.svg, apoi .png, apoi dreptunghi alb (xx.svg)
+    // Steag emoji din codul de tara (ISO 3166, ex. ro -> 🇷🇴). Cod lipsa sau "xx" -> 🏳️
   function flag(code) {
-    const img = document.createElement("img");
-    img.className = "flag";
-    img.alt = "";
-    const c = /^[a-z]{2}$/.test((code || "").toLowerCase()) ? code.toLowerCase() : "xx";
-    const tries = [`/static/flags/${c}.svg`, `/static/flags/${c}.png`, "/static/flags/xx.svg"];
-    let i = 0;
-    img.src = tries[0];
-    img.onerror = () => { if (++i < tries.length) img.src = tries[i]; else img.onerror = null; };
-    return img;
+    const span = document.createElement("span");
+    span.className = "flag";
+    const c = (code || "").toLowerCase();
+    span.textContent = /^[a-z]{2}$/.test(c) && c !== "xx"
+      ? String.fromCodePoint(...[...c.toUpperCase()].map((ch) => 0x1F1E6 + ch.charCodeAt(0) - 65))
+      : "🏳️";
+    return span;
   }
 
   let toastEl = null, toastTimer = null;
