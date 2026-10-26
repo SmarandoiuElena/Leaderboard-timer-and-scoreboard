@@ -177,6 +177,10 @@ input[type="number"]:focus,
   box-shadow: var(--shadow-input-focus);
 }
 
+/* ---- steag ---- */
+  .flag { font-size: 1.6rem; line-height: 1; flex: none; vertical-align: middle; }
+  
+/* ---- butoane (text alb pe accent) ---- */
 .btn {
   font-family: 'Montserrat', sans-serif;
   font-weight: 700;

@@ -7,7 +7,7 @@
   const teamEl = document.getElementById("team");
   const pill = document.getElementById("pill");
 
-  const STATUS = { stopped: "Pregătit", running: "În desfășurare", paused: "Pauză" };
+  const STATUS = { stopped: "Pregătit", running: "În desfășurare", finished: "Final de cursă" };
 
   Acad.connect({
     onState(s) {

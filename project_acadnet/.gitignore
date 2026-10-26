@@ -2,5 +2,8 @@ __pycache__/
 *.pyc
 *.db
 *:Zone.Identifier
-venv/
+.venv/
 p.zip
+*.db
+*.db-wal
+*.db-shm

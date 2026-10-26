@@ -23,18 +23,19 @@ def start(cmd: dict) -> None:
     t = state["timer"]
     if state["active"]["team_id"] is None:
         raise CmdError("Alege o echipă înainte de start.")
-    if t["state"] != "running":
-        if t["state"] == "stopped":
-            t["elapsed_before_pause"] = 0.0
+    if t["state"] == "finished":
+        raise CmdError("Cursa s-a încheiat. Dă Reset pentru o cursă nouă.")
+    if t["state"] == "stopped":
+        t["elapsed_before_pause"] = 0.0
         t["start"] = time.time()
         t["state"] = "running"
 
 
-def pause(cmd: dict) -> None:
+def finish(cmd: dict) -> None:
     t = state["timer"]
     if t["state"] == "running":
         t["elapsed_before_pause"] += time.time() - t["start"]
-        t["state"] = "paused"
+        t["state"] = "finished"
 
 
 def reset(cmd: dict) -> None:

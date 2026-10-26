@@ -23,6 +23,7 @@ Pe celelalte dispozitive din rețea deschizi `http://<IP-ul-laptopului>:8000/`.
 | Timer (ecran public) | `/timer` |
 | Clasament Proba 1 | `/clasament1` |
 | Clasament Proba 2 | `/clasament2` |
+| Administrare (echipe, scoruri) | `/admin` |
 
 ## Structura proiectului
 
@@ -36,14 +37,16 @@ project_acadnet/
     ├── state.py         # starea din memorie + snapshot() (ce primesc toate ecranele)
     ├── data/            # teams.csv, proba1.csv, proba2.csv
     ├── routers/
-    │   └── pages.py     # rutele paginilor HTML
+    │   ├── pages.py     # rutele paginilor HTML
+    │   └── admin.py     # API REST /api/... pentru pagina de administrare
     ├── services/        # logica, fără nimic de WebSocket sau HTTP
     │   ├── errors.py    # CmdError (eroare de validare)
-    │   ├── storage.py   # citit/scris CSV
+    │   ├── storage.py   # singurul loc cu SQL (SQLite)
+    │   ├── teams.py     # adaugare / editare / stergere echipe
     │   ├── scoring.py   # clasamentul
     │   ├── timer.py     # start / pauză / reset
     │   ├── active.py    # alegerea probei și a echipei
-    │   └── attempts.py  # salvare / ștergere încercări
+    │   └── attempts.py  # salvare / editare / ștergere încercări + validarea scorurilor
     ├── ws/
     │   ├── manager.py   # clienții conectați + broadcast
     │   └── endpoint.py  # ruta /ws + tabelul de comenzi
@@ -81,16 +84,25 @@ Regula de bază: `services/` nu știu de WebSocket, `ws/` nu știe de reguli de 
 3. O trimiți din JS cu `link.send({ action: "..." })`
 
 #### O echipă nouă
-O linie în `data/teams.csv` și repornești serverul.
+Din `/admin`, tab-ul Echipe. Apare imediat pe toate ecranele, fără restart.
 
 #### O pagină nouă
 Fișierul HTML în `static/`, o rută în `routers/pages.py`.
 
-## Date (folderul `app/data/`)
+## Pagina de administrare (`/admin`)
 
-- `teams.csv` – echipele (`id,name,country_code,country_name`). Adaugi o linie nouă și repornești serverul.
-- `proba1.csv`, `proba2.csv` – o linie pe încercare. Se rescriu la fiecare salvare/ștergere.
-  Nu edita fișierele în Excel cât timp rulează serverul (le suprascrie din memorie).
+- **Proba 1 / Proba 2**: tabel cu toate încercările. „Editează” transformă rândul în câmpuri: echipa, checkpoint-urile trecute (proba 1), punctajele, timpul. Totalul se recalculează în server. „+ Încercare nouă” adaugă o încercare uitată; „Șterge” o elimină.
+- **Echipe**: adaugi / redenumești / ștergi echipe și le schimbi țara (steagul). O echipă cu încercări salvate nu se poate șterge până nu ștergi încercările.
+- Orice modificare ajunge imediat pe timer, pe clasamente și pe panoul de arbitru (prin WebSocket).
+- Regulile de validare (viteză ≤ 50, fără scoruri negative etc.) sunt aceleași ca la panoul de arbitru: stau într-un singur loc, `services/attempts.py`.
+
+API-ul folosit de pagină: `GET/POST /api/teams`, `PUT/DELETE /api/teams/{id}`, `GET/POST /api/attempts/{proba}`, `PUT/DELETE /api/attempts/{proba}/{id}`.
+
+## Date
+
+Totul e în baza de date SQLite `app/data/acadnet.db` (3 tabele: `teams`, `attempts_p1`, `attempts_p2`), în mod WAL. Locul se poate muta cu variabila `DB_PATH`.
+Fișierele `data/*.csv` se citesc o singură dată, la crearea unei baze noi (import inițial). După aceea nu mai contează.
+Dacă modifici baza în DB Browser cât rulează serverul, ecranele se actualizează singure în ~2 secunde.
 
 ## Steaguri
 

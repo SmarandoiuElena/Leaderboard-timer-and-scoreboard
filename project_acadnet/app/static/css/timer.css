@@ -17,8 +17,9 @@
   font-weight: 800;
   color: var(--acadnet-purple);
 }
-.team .flag-emoji { font-size: 3.4rem; }
-.team.none { color: var(--text-muted); font-weight: 600; }
+.team .flag { font-size: 3rem; }
+.team small { color: var(--muted); font-size: .5em; font-weight: 400; }
+.team.none { color: var(--muted); font-weight: 400; }
 
 .clock-card {
   padding: 2.2rem 4.5rem;
